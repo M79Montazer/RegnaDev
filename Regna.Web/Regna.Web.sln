@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regna.Web", "Regna.Web.csproj", "{D68FE075-B8E2-4EFE-9FC8-B08F3612BC3C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D68FE075-B8E2-4EFE-9FC8-B08F3612BC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68FE075-B8E2-4EFE-9FC8-B08F3612BC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68FE075-B8E2-4EFE-9FC8-B08F3612BC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68FE075-B8E2-4EFE-9FC8-B08F3612BC3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E00E5E10-A027-43F5-9F26-A7B59E72C86A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/AllRef/Debug/net6.0/Regna.VM.deps.json
+/AllRef/Debug/net6.0/Regna.VM.pdb
+/Regna.Core/.vs
+/Regna.Core/bin/Debug/net6.0
+/Regna.Core/obj
+/Regna.Telegram/bin/Debug/net6.0
+/Regna.Telegram/.vs
+/Regna.Telegram/obj
+/Regna.VM/.vs
+/Regna.VM/bin/Debug/net6.0
+/Regna.VM/obj
+/Regna.Web/.vs
+/Regna.Web/bin/Debug/net6.0
+/Regna.Web/obj
+/Regna.Web/wwwroot
