@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Regna.VM
 {
-    public class ListenerMech
+    public class ListenerMechVM
     {
         public long ListenerMechId { get; set; }
         public Listener Listener { get; set; }

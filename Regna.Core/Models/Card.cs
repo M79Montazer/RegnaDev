@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace Regna.Core.Models
 {
     public class Card
     {
+        [Key]
         public long CardId { get; set; }
         public string CardName { get; set; }
         public long MatchId { get; set; }

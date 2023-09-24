@@ -1,10 +1,12 @@
 ﻿using Regna.VM.Enums;
 using Regna.VM;
+using System.ComponentModel.DataAnnotations;
 
 namespace Regna.Core.Models
 {
     public class Event : BaseEntity
     {
+        [Key]
         public long EventID { get; set; }
         public string EventName { get; set; }
         public long MechanicId { get; set; }

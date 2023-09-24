@@ -8,6 +8,7 @@ namespace Regna.VM.Enums
 {
     public enum GamePhase
     {
+        MatchStart = 0,
         ActionPhase = 1,
         PlayPhase = 2
     }
