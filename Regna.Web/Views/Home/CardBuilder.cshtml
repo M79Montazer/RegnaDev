@@ -1,0 +1,113 @@
+﻿@section css{
+    <style>
+        th:first-child {
+            width: 5% !important;
+        }
+    </style>
+}
+    @{
+    ViewData["Title"] = "Card Builder";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div id="OCardTable" style="width: 60%; margin: auto;"></div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+        let i = 0;
+        $(document).ready(function() {
+
+            //Prepare jtable plugin
+            $('#OCardTable').jtable({
+                title: 'The Cards Table',
+                paging: true,
+                actions: {
+                    listAction: '/Home/GetListOfOCards',
+                    deleteAction: '/Home/DeleteOCard',
+                    updateAction: '/Home/UpdateOCard',
+                    createAction: '/Home/AddOCard'
+                },
+                fields: {
+                    OCardId: {
+                        key: true,
+                        create: false,
+                        edit: false,
+                        list: false
+                    },
+                    foo: {
+                        create: false,
+                        edit: false,
+                        width: '12%',
+                        //list: false,
+                        display: function(data) {
+                            return i++;
+                        }
+                    },
+                    OCardName: {
+                        title: 'Name',
+                        //width: '15%'
+                    },
+                    //EmailAddress: {
+                    //    title: 'Emal address',
+                    //    list: false
+                    //},
+                    //Password: {
+                    //    title: 'User Password',
+                    //    type: 'password',
+                    //    list: false
+                    //},
+                    //Gender: {
+                    //    title: 'Gender',
+                    //    width: '12%',
+                    //    options: { 'M': 'Male', 'F': 'Female' }
+                    //},
+                    //CityId: {
+                    //    title: 'Living city',
+                    //    width: '15%',
+                    //    options: '/Home/GetCityOptions'
+                    //},
+                    //BirthDate: {
+                    //    title: 'Birth date',
+                    //    width: '18%',
+                    //    type: 'date',
+                    //    displayFormat: 'yy-mm-dd'
+                    //},
+                    //Education: {
+                    //    title: 'Education',
+                    //    list: false,
+                    //    type: 'radiobutton',
+                    //    options: { '1': 'Primary school',
+                    //       '2': 'High school', '3': 'University' }
+                    //},
+                    //About: {
+                    //    title: 'About this person',
+                    //    type: 'textarea',
+                    //    list: false
+                    //},
+                    //IsActive: {
+                    //    title: 'Status',
+                    //    width: '10%',
+                    //    type: 'checkbox',
+                    //    values: { 'false': 'Passive', 'true': 'Active' },
+                    //    defaultValue: 'true'
+                    //},
+                    //RecordDate: {
+                    //    title: 'Record date',
+                    //    width: '18%',
+                    //    type: 'date',
+                    //    displayFormat: 'dd.mm.yy',
+                    //    create: false,
+                    //    edit: false
+                    //}
+                }
+            });
+
+            //Load person list from server
+            $('#OCardTable').jtable('load');
+        });
+
+    </script>
+}

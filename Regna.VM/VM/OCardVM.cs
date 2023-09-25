@@ -10,7 +10,7 @@ namespace Regna.VM
     {
         public long OCardId { get; set; }
         public string OCardName { get; set; }
-        public virtual List<OVariableVM> OVariables { get; set; }
-        public virtual List<MechanicVM> Mechanics { get; set; }
+        public virtual List<OVariableVM>? OVariables { get; set; }
+        public virtual List<MechanicVM>? Mechanics { get; set; }
     }
 }

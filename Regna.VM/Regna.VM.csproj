@@ -7,8 +7,4 @@
     <BaseOutputPath>D:\Regna\Code\AllRef</BaseOutputPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="PVM\" />
-  </ItemGroup>
-
 </Project>

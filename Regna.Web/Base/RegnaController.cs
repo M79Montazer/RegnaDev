@@ -4,11 +4,13 @@ namespace Regna.Web.Base
 {
     public class RegnaController : Controller
     {
-            protected string ServiceUrl { get; }
+        //private readonly IConfiguration _config;
+        //protected string ServiceUrl { get; }
+        //public RegnaController(IConfiguration config)
+        //{
+        //    _config = config;
+        //    ServiceUrl = _config.GetValue<string>("CoreApiAddress");
+        //}
 
-            public RegnaController()
-            {
-            ServiceUrl = "http://localhost:6969";
-            }
     }
 }

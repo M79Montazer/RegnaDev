@@ -5,7 +5,6 @@ using Regna.VM;
 
 namespace Regna.Core.Controllers
 {
-    [ApiController]
     [Route("[controller]/[action]")]
     public class WeatherForecastController : ControllerBase
     {

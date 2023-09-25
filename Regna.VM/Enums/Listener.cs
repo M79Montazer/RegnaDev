@@ -8,6 +8,7 @@ namespace Regna.VM.Enums
 {
     public enum Listener
     {
+        OnStartOfMatch = 0,
         OnAction = 1,
         OnPlay = 2,
         OnDeath = 3,

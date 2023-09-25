@@ -3,7 +3,7 @@ using Regna.VM;
 
 namespace Regna.Core.Services
 {
-    public class CoreService
+    public class CoreService : ICoreService
     {
         public  ITestService _testService { get; }
         public CoreService(ITestService testService)
