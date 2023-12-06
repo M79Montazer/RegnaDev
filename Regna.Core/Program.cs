@@ -22,6 +22,7 @@ builder.Services.AddTransient<ITestService, TestService>();
 builder.Services.AddTransient<IMatchService, MatchService>();
 builder.Services.AddTransient<ICoreService, CoreService>();
 builder.Services.AddTransient<IAssetService, AssetService>();
+builder.Services.AddTransient<IValidationService, ValidationService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

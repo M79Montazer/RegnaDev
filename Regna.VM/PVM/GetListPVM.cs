@@ -10,5 +10,7 @@ namespace Regna.VM
     {
         public int jtStartIndex { get; set; }
         public int jtPageSize { get; set; }
+        public long? ParentId { get; set; }
+        public string? SearchString { get; set; }
     }
 }

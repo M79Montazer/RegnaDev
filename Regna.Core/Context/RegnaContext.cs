@@ -19,8 +19,10 @@ namespace Regna.Core.Context
         public DbSet<Mechanic> Mechanics { get; set; }
         public DbSet<OVariable> OVariables { get; set; }
         public DbSet<Variable> Variables { get; set; }
-        public DbSet<ListenerMech> ListenerMeches { get; set; }
+        public DbSet<ListenerMech> ListenerMechs { get; set; }
         public DbSet<MechOCard> MechOCards { get; set; }
         public DbSet<Match> Matches{ get; set; }
+        public DbSet<GenericVariable> GenericVariables { get; set; }
+        public DbSet<CardInDeck> Deck { get; set; }
     }
 }

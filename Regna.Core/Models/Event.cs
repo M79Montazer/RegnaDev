@@ -18,6 +18,8 @@ namespace Regna.Core.Models
         public long? Base_CardId { get; set; }
         public string? Base_VariableName { get; set; }
         public string? Amount { get; set; }
+        public int? Priority { get; set; }
+        public ResponseResultType ResponseResultType { get; set; }
 
     }
 }

@@ -1,4 +1,16 @@
-﻿@section css{
+﻿@using Newtonsoft.Json
+@{
+    var a =JsonConvert.SerializeObject(ViewData["VarTypes"] as Dictionary<int, string>);
+
+}
+
+<script>
+    var varTypes = {};
+    varTypes = @Html.Raw(a);
+</script>
+
+
+@section css{
     <style>
         th:first-child {
             width: 5% !important;
@@ -6,12 +18,12 @@
     </style>
 }
     @{
-    ViewData["Title"] = "Card Builder";
+    ViewData["Title"] = "Generic Variables Builder";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div id="OCardTable" style="width: 60%; margin: auto;"></div>
+<div id="GenericVariableTable" style="width: 60%; margin: auto;"></div>
 
 
 
@@ -21,17 +33,17 @@
         $(document).ready(function() {
 
             //Prepare jtable plugin
-            $('#OCardTable').jtable({
-                title: 'The Cards Table',
+            $('#GenericVariableTable').jtable({
+                title: 'The GenericVariables Table',
                 paging: true,
                 actions: {
-                    listAction: '/Home/GetListOfOCards',
-                    deleteAction: '/Home/DeleteOCard',
-                    updateAction: '/Home/UpdateOCard',
-                    createAction: '/Home/AddOCard'
+                    listAction: '/Home/GetListOfGenericVariables',
+                    deleteAction: '/Home/DeleteGenericVariable',
+                    updateAction: '/Home/UpdateGenericVariable',
+                    createAction: '/Home/AddGenericVariable'
                 },
                 fields: {
-                    OCardId: {
+                    GenericVariableId: {
                         key: true,
                         create: false,
                         edit: false,
@@ -46,18 +58,15 @@
                             return i++;
                         }
                     },
-                    OCardName: {
+                    GenericVariableName: {
                         title: 'Name',
-                        //width: '15%'
                     },
-                    OVariables: {
-                        create: false,
-                        edit: false,
-                        title: 'Variables',
-                        display: function(data) {
-                            return '<a href="/Home/VariableBuilder?OCardId=' + data.record.OCardId + '"><button data-ocardId="' + data.record.OCardId + '"></button></a>'
-                        }
-                        //width: '15%'
+                    VariableType: {
+                        title: 'Variable Type',
+                        options: varTypes,
+                    },
+                    DefaultValue: {
+                        title: 'Default Value',
                     },
                     //EmailAddress: {
                     //    title: 'Emal address',
@@ -115,7 +124,7 @@
             });
 
             //Load person list from server
-            $('#OCardTable').jtable('load');
+            $('#GenericVariableTable').jtable('load');
         });
 
     </script>

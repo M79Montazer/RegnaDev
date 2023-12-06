@@ -14,11 +14,15 @@ namespace Regna.VM
         public long SecondPlayerId { get; set; }
         public int PlayerTurn { get; set; }
         public GamePhase Phase { get; set; }
-        public float FirstPlayerRS { get; set; }
-        public float SecondPlayerRS { get; set; }
-        public float FirstPlayerMorale { get; set; }
-        public float SecondPlayerMorale { get; set; }
+        public double FirstPlayerRS { get; set; }
+        public double SecondPlayerRS { get; set; }
+        public double FirstPlayerMorale { get; set; }
+        public double SecondPlayerMorale { get; set; }
         public UserVM FirstPlayer { get; set; }
         public UserVM SecondPlayer { get; set; }
+        public List<CardVM> Cards { get; set; }
+        public bool FirstPlayerPassed { get; set; }
+        public bool SecondPlayerPassed { get; set; }
+
     }
 }

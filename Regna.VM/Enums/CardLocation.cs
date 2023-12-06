@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Regna.VM.Enums
 {
-    public enum GamePhase
+    public enum CardLocation
     {
-        MatchStart = 0,
-        ActionPhase = 2,
-        PlayPhase = 1,
-        MatchEnded = 3,
+        Deck = 0,
+        Hand = 1,
+        Ground = 2,
+        Graveyard = 3,
     }
 }

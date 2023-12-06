@@ -42,6 +42,10 @@ namespace Regna.Core.Models
 
             CreateMap<MatchVM, Match>();
             CreateMap<Match, MatchVM>();
+
+            CreateMap<GenericVariableVM, GenericVariable>();
+            CreateMap<GenericVariable, GenericVariableVM>();
+
         }
     }
 }

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Regna.VM.Enums
 {
-    public enum GamePhase
+    public enum ResponseType
     {
-        MatchStart = 0,
-        ActionPhase = 2,
-        PlayPhase = 1,
-        MatchEnded = 3,
+        Played = 0,
+        Damaged = 1,
+        Healed = 2,
+        Killed = 3,
     }
 }

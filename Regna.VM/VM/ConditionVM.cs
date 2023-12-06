@@ -11,6 +11,7 @@ namespace Regna.VM
     {
         public long ConditionId { get; set; }
         public string ConditionName { get; set; }
+        public long MechanicId { get; set; }
         public CompareOPType CompareOPType { get; set; }
         public long FirstVariableId { get; set; }
         public long? SecondVariableId { get; set; }
