@@ -36,8 +36,8 @@ namespace Regna.Core.Services
                         SecondPlayerId = SecondPlayerId,
                         Phase = GamePhase.PlayPhase,
                         PlayerTurn = 1,
-                        FirstPlayerMorale = 50,
-                        SecondPlayerMorale = 50,
+                        FirstPlayerMorale = 20,
+                        SecondPlayerMorale = 20,
                         FirstPlayerRS = 10,
                         SecondPlayerRS = 10,
                         CreateDate = DateTime.Now,
@@ -58,15 +58,35 @@ namespace Regna.Core.Services
                             Location = CardLocation.Deck,
                             MatchId = match.MatchId,
                             OCardId = ocard.OCardId,
-                            UserId = cardInDeck.UserId
+                            UserId = cardInDeck.UserId,
+                            PositionNumber = 0
                         });
                     }
                     cards.Shuffle();
                     _dbContext.Cards.AddRange(cards);
                     _dbContext.SaveChanges();
+                    var variables = new List<Variable>();
+                    var oVariables = _dbContext.OVariables.Where(a => !a.IsDeleted && OCardIds.Contains(a.OCardID)).ToList();
+                    foreach (var card in cards)
+                    {
+                        var ovs = oVariables.Where(a => a.OCardID == card.OCardId).ToList();
+                        foreach (var ov in ovs)
+                        {
+                            variables.Add(new Variable
+                            {
+                                CardId = card.CardId,
+                                VariableName = ov.OVariableName,
+                                VariableType = ov.VariableType,
+                                VariableValue = ov.InitialValue
+                            });
+                        }
+                    }
+                    _dbContext.Variables.AddRange(variables);
+                    _dbContext.SaveChanges();
                     transaction.Commit();
-                    Draw(5, FirstPlayerId, match.MatchId);
-                    Draw(5, SecondPlayerId, match.MatchId);
+                    var matchVM = GetMatch(match.MatchId);
+                    Draw(5, FirstPlayerId, match.MatchId, matchVM);
+                    Draw(5, SecondPlayerId, match.MatchId, matchVM);
                     return true;
                 }
                 catch (Exception)
@@ -88,17 +108,34 @@ namespace Regna.Core.Services
             try
             {
                 var cardVM = matchVM.Cards.Where(c => c.CardId == cardId).First();
+                var firstAvailablePos = 0;
+                var groundCardNumbers = matchVM.Cards.Where(a => a.UserId == userId && a.Location == CardLocation.Ground).Select(a => a.PositionNumber).OrderBy(a => a).ToList();
+                if (groundCardNumbers is not null)
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (groundCardNumbers.Contains(firstAvailablePos))
+                        {
+                            firstAvailablePos++;
+                        }
+                    }
+                cardVM.PositionNumber = firstAvailablePos;
                 cardVM.Location = CardLocation.Ground;
                 var res = new ResponseVM
                 {
                     ChildResponses = new List<ResponseVM>(),
-                    Actor = cardVM,
+                    Target = cardVM,
                     ResponseResultType = ResponseResultType.Played,
                 };
                 MechService.RunMech(res, cardVM, Listener.OnPlay, matchVM);
                 //_dbContext.SaveChanges();
                 //transaction.Commit();
                 SaveMatch(matchVM, res);
+                var drawedList = Draw(1, userId, matchId, matchVM);
+                res.ChildResponses.Add(new ResponseVM
+                {
+                    ResponseResultType = ResponseResultType.Drawed,
+                    Target = drawedList.First()
+                });
                 return res;
             }
             catch (Exception)
@@ -144,9 +181,9 @@ namespace Regna.Core.Services
                             match.FirstPlayerRS += 10;
                             match.SecondPlayerRS += 10;
                         }
-                        if (match.Phase == GamePhase.ActionPhase)
+                        else if (match.Phase == GamePhase.PlayPhase)
                         {
-                            match.Phase = GamePhase.PlayPhase;
+                            match.Phase = GamePhase.ActionPhase;
 
                         }
                         match.FirstPlayerPassed = false;
@@ -154,7 +191,7 @@ namespace Regna.Core.Services
                     }
                     match.FirstPlayerPassed = true;
                 }
-                if (match.SecondPlayerId== playerId)
+                if (match.SecondPlayerId == playerId)
                 {
                     if (match.FirstPlayerPassed)
                     {
@@ -164,9 +201,9 @@ namespace Regna.Core.Services
                             match.FirstPlayerRS += 10;
                             match.SecondPlayerRS += 10;
                         }
-                        if (match.Phase == GamePhase.ActionPhase)
+                        else if (match.Phase == GamePhase.PlayPhase)
                         {
-                            match.Phase = GamePhase.PlayPhase;
+                            match.Phase = GamePhase.ActionPhase;
 
                         }
                         match.FirstPlayerPassed = false;
@@ -174,7 +211,20 @@ namespace Regna.Core.Services
                     }
                     match.SecondPlayerPassed = true;
                 }
+                // limit RS to 20
+                if (match.FirstPlayerRS > 20)
+                {
+                    match.FirstPlayerRS = 20;
+                }
+                if (match.SecondPlayerRS > 20)
+                {
+                    match.SecondPlayerRS = 20;
+                }
+
+                _dbContext.SaveChanges();
+                res.Target = new CardVM { UserId = playerId };
                 res.ResponseResultType = ResponseResultType.Passed;
+                return res;
             }
             catch (Exception)
             {
@@ -182,31 +232,69 @@ namespace Regna.Core.Services
             }
             return null;
         }
-
-        bool Draw(int number, long userId, long matchId)
+        public MatchVM GetMatchVM(long playerId, long matchId)
         {
+            MatchVM matchVM = null;
+            try
+            {
+                if (_dbContext.Matches.Where(m => !m.IsDeleted && (m.SecondPlayerId == playerId || m.FirstPlayerId == playerId)).Any())
+                {
+                    matchVM = GetMatch(matchId);
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return matchVM;
+        }
+        List<CardVM> Draw(int number, long userId, long matchId, MatchVM matchVM)
+        {
+            var list = new List<CardVM>();
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
-                    var cards = _dbContext.Cards.Where(a => a.MatchId == matchId && a.UserId == userId).ToList();
-                    cards.Shuffle();
-                    cards.Take(number);
-                    foreach (var card in cards)
+                    var cards = _dbContext.Cards.Where(a =>
+                        a.MatchId == matchId && a.UserId == userId && a.Location == CardLocation.Deck).ToList();
+                    if (cards.Count > 0)
                     {
-                        card.Location = CardLocation.Hand;
+
+                        cards.Shuffle();
+                        cards = cards.Take(number).ToList();
+                        var i = 0;
+                        var groundCardNumbers = matchVM.Cards.Where(a => a.Location == CardLocation.Hand && a.UserId == userId).Select(a => a.PositionNumber).OrderBy(a => a).ToList();
+                        foreach (var card in cards)
+                        {
+                            card.Location = CardLocation.Hand;
+                            var firstAvailablePos = 0;
+                            if (groundCardNumbers is not null)
+                            {
+                                for (int j = 0; j < 5; j++)
+                                {
+                                    if (groundCardNumbers.Contains(firstAvailablePos))
+                                    {
+                                        firstAvailablePos++;
+                                    }
+                                    else { break; }
+                                }
+                                groundCardNumbers.Add(firstAvailablePos);
+                            }
+                            card.PositionNumber = firstAvailablePos;
+                            list.Add(_mapper.Map<CardVM>(card));
+                        }
+                        _dbContext.SaveChanges();
+                        transaction.Commit();
+                        return list;
                     }
-                    _dbContext.SaveChanges();
-                    transaction.Commit();
                 }
                 catch (Exception)
                 {
                     transaction.Rollback();
                 }
             }
-            return false;
+            return null;
         }
-        MatchVM GetMatch(long matchId)
+        private MatchVM GetMatch(long matchId)
         {
             var matchVM = new MatchVM();
             try
@@ -259,18 +347,27 @@ namespace Regna.Core.Services
                     {
                         switch (response.ResponseResultType)
                         {
+                            case ResponseResultType.Drawed:
+                                {
+                                    //var card = _dbContext.Cards.Where(a => a.CardId == response.Actor.CardId).First();
+                                    //card.Location = CardLocation.Hand;
+                                    //card.PositionNumber = response.Actor.PositionNumber;
+                                    //_dbContext.SaveChanges();
+                                }
+                                break;
                             case ResponseResultType.Played:
                                 {
-                                    if (response.Actor.UserId == match.FirstPlayerId)
+                                    if (response.Target.UserId == match.FirstPlayerId)
                                     {
-                                        match.FirstPlayerRS -= Convert.ToDouble(response.Actor.Variables.Where(a => a.VariableName == "RC").First().VariableValue);
+                                        match.FirstPlayerRS -= Convert.ToDouble(response.Target.Variables.Where(a => a.VariableName == "RC").First().VariableValue);
                                     }
                                     else
                                     {
-                                        match.SecondPlayerRS -= Convert.ToDouble(response.Actor.Variables.Where(a => a.VariableName == "RC").First().VariableValue);
+                                        match.SecondPlayerRS -= Convert.ToDouble(response.Target.Variables.Where(a => a.VariableName == "RC").First().VariableValue);
                                     }
-                                    var card = _dbContext.Cards.Where(a => a.CardId == response.Actor.CardId).First();
+                                    var card = _dbContext.Cards.Where(a => a.CardId == response.Target.CardId).First();
                                     card.Location = CardLocation.Ground;
+                                    card.PositionNumber = response.Target.PositionNumber;
                                     _dbContext.SaveChanges();
                                 }
                                 break;
@@ -345,6 +442,37 @@ namespace Regna.Core.Services
 
             return allResponses;
 
+        }
+
+
+        public bool ClearBoard(long matchId)
+        {
+            try
+            {
+                var cards = _dbContext.Cards.Where(a => a.MatchId == matchId);
+                foreach (var card in cards)
+                {
+                    card.Location = CardLocation.Deck;
+                    card.PositionNumber = 0;
+                }
+                var m = _dbContext.Matches.Where(a => !a.IsDeleted && a.MatchId == matchId).First();
+                m.FirstPlayerRS = 10;
+                m.SecondPlayerRS = 10;
+                m.SecondPlayerMorale = 20;
+                m.FirstPlayerMorale = 20;
+                m.FirstPlayerPassed = false;
+                m.SecondPlayerPassed = false;
+                _dbContext.SaveChanges();
+
+                var match = GetMatch(matchId);
+                Draw(5, match.FirstPlayerId, matchId, match);
+                Draw(5, match.SecondPlayerId, matchId, match);
+                return true;
+            }
+            catch (Exception)
+            {
+            }
+            return false;
         }
     }
 }

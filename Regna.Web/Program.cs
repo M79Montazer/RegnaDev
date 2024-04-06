@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Regna.Web.Base;
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddSingleton<ICoreApiClient,CoreApiClient>();
 
@@ -29,5 +31,8 @@ app.MapControllerRoute(
 JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
 {
     ContractResolver = new DefaultContractResolver(),
+    Converters = new List<JsonConverter> { new StringEnumConverter() }
 };
+app.MapHub<GameHub>("/gameHub");
+
 app.Run();

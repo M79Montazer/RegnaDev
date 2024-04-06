@@ -320,6 +320,23 @@ namespace Regna.Core.Services
                 OCard.IsDeleted = false;
                 _dbContext.OCards.Add(OCard);
                 _dbContext.SaveChanges();
+                var genericVariables = _dbContext.GenericVariables.Where(a => !a.IsDeleted).ToList();
+                var ovariables = new List<OVariable>();
+                foreach (var gv in genericVariables)
+                {
+                    ovariables.Add(new OVariable
+                    {
+                        CreateDate = DateTime.Now,
+                        IsDeleted = false,
+                        InitialValue = gv.DefaultValue,
+                        IsGeneric = true,
+                        OCardID = OCard.OCardId,
+                        OVariableName = gv.GenericVariableName,
+                        VariableType = gv.VariableType
+                    });
+                }
+                _dbContext.OVariables.AddRange(ovariables);
+                _dbContext.SaveChanges();
                 OCardVM.OCardId = OCard.OCardId;
                 return OCardVM;
             }

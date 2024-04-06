@@ -10,11 +10,12 @@ namespace Regna.VM.Enums
     {
         Passed = -1,
         None = 0,
-        Played = 1,
-        Actioned = 2,
-        Damaged = 3,
-        Healed = 4,
-        Killed = 5,
-        VariableChanged = 6,
+        Drawed = 1,
+        Played = 2,
+        Actioned = 3,
+        Damaged = 4,
+        Healed = 5,
+        Killed = 6,
+        VariableChanged = 7,
     }
 }

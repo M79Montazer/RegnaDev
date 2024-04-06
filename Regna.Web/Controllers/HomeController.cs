@@ -38,6 +38,10 @@ namespace Regna.Web.Controllers
         {
             return View();
         }
+        public IActionResult Gameplay_Three()
+        {
+            return View();
+        }
 
         #region Variable Builder
         public IActionResult VariableBuilder(long OCardId = 0)

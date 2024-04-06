@@ -17,6 +17,7 @@ namespace Regna.Core.Models
         public long UserId { get; set; }
         public long OCardId { get; set; }
         public CardLocation Location { get; set; }
+        public int PositionNumber { get; set; }
 
         //public virtual List<Variable> Variables { get; set; }
         //public virtual List<Mechanic> Mechanics { get; set; }
