@@ -84,12 +84,12 @@ namespace Regna.Core.Services
                                             break;
                                         case VariableType.unsigned:
                                             v.VariableValue = (Convert.ToDouble(v.VariableValue) - Convert.ToDouble(baseAmount)).ToString();
-                                            v.VariableValue = Convert.ToDouble(v.VariableValue) < 0 ? "0" : v.VariableValue;
                                             break;
                                         case VariableType.boolean:
                                             v.VariableValue = false.ToString().ToLower();
                                             break;
                                     }
+                                    v.VariableValue = Convert.ToDouble(v.VariableValue) < 0 ? "0" : v.VariableValue;
                                     break;
                                 case ActionOPType.Increase:
                                     switch (v.VariableType)
@@ -99,13 +99,12 @@ namespace Regna.Core.Services
                                             break;
                                         case VariableType.unsigned:
                                             v.VariableValue = (Convert.ToDouble(v.VariableValue) + Convert.ToDouble(baseAmount)).ToString();
-                                            v.VariableValue = Convert.ToDouble(v.VariableValue) < 0 ? "0" : v.VariableValue;
                                             break;
                                         case VariableType.boolean:
                                             v.VariableValue = true.ToString().ToLower();
                                             break;
                                     }
-
+                                    v.VariableValue = Convert.ToDouble(v.VariableValue) < 0 ? "0" : v.VariableValue;
                                     break;
                                 default:
                                     break;
@@ -118,6 +117,7 @@ namespace Regna.Core.Services
                             if (v.VariableName.Equals("HP") && Convert.ToDouble(v.VariableValue) <= 0)
                             {
                                 response.ResponseResultType = ResponseResultType.Killed;
+                                response.Target.Location = CardLocation.Graveyard;
                             }
                             //response.
                             parentResponse.ChildResponses.Add(response);

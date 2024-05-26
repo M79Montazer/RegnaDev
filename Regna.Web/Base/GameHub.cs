@@ -33,6 +33,26 @@ namespace Regna.Web.Base
             // Send the move to the other player in the group
             await Clients.OthersInGroup(groupName).SendAsync("Test", move);
         }
+        public async Task Action(long userId, long matchId, long cardId, long targetId)
+        {
+            var message = ""; 
+            try
+            {
+                var response = await _coreApiClient.ApiRequest("Match", "Action", new ActionPVM { MatchId = matchId, CardId = cardId, UserId = userId, TargetId =targetId  });
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var res = JsonConvert.DeserializeObject<ResponseVM>(responseBody);
+                    message = JsonConvert.SerializeObject(new { Result = "OK", ResponseVM = res });
+                }
+            }
+            catch (Exception ex)
+            {
+                message = JsonConvert.SerializeObject(new { Result = "ERROR", Message = "there was an error" });
+            }
+            await Clients.Group(matchId.ToString()).SendAsync("Actioned", message);
+        }
+        
         public async Task Play(long userId, long matchId, long cardId)
         {
             // Contains logic for a player's move

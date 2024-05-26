@@ -17,4 +17,5 @@
 /Regna.Web/bin/Debug/net6.0
 /Regna.Web/obj
 /Regna.Web/wwwroot
+!/Regna.Web/wwwroot/js/GamePlay
 /Regna.Core/Regna.Core.csproj.user
